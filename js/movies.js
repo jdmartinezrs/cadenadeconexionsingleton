@@ -1,18 +1,18 @@
 import {connect} from "../../helpers/db/connect.js";
 
-export class movies extends connect{
+export class movis extends connect{
     static instance;
     constructor(){
-        if(typeof movies.instance === "object"){
-            return movies.instance;
+        if(typeof movis.instance === "object"){
+            return movis.instance;
         }
         super();
-        this.collection = this.db.collection("movies");
-        movies.instance = this;
+        this.collection = this.db.collection("movis");
+        movis.instance = this;
         return this;
     }
 }
-async getAllMovies(){
+async getAllMovis(){
     let res = await this.collection.aggregate([
         {
             $project{
