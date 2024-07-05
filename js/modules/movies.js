@@ -16,5 +16,19 @@ export class movies extends connect{
         await this.conexion.close()
         return res;
     }
-  
+
+    async getAllBlurayMoviesWithMoreThan200(){
+        let res = await this.collection.find({"format":{$elemMatch:{name:"Bluray"}}},{projection:{format:{$elemMatch:{name:"Bluray"}}}}).toArray();
+        await this.conexion.close()
+        return res;
+
+    }
+
+
+    // async getAllBlurayMoviesWithMoreThan200(){
+    //     let res = await this.collection.find({"format.copies": {$gte: 200}, "format.name": "Bluray"}, {_id:0, "format.copies": 1, "format.name": 1}).toArray();
+    //     await this.conexion.close()
+    //     return res;
+
+    // }
 }
