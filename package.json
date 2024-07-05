@@ -1,16 +1,16 @@
 {
-  "dependencies": {
-    "mongodb": "^6.8.0"
-  },
   "name": "cadenadeconexionsingleton",
   "version": "1.0.0",
   "main": "connect.js",
-  "devDependencies": {},
+  "type": "module",
   "scripts": {
+    "dev": "node --watch main.js -p",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "dependencies": {
+    "mongodb": "^6.8.0",
+    "node": "^22.4.0"
+  }
 }

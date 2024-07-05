@@ -7,10 +7,11 @@ port;
 #cluster;
 #dbName;
 static instance;
-constructor({user:u,port:p, pass: w, host: h,cluster:c, dbName: d}={
+constructor(
+    {user:u, port:p, pass: w, host: h,cluster:c, dbName: d }={
     user:"mongo",
     port:47797,
-    pass: "PSmQbwecKrbuFTCqXmYoaqicgEZpFeF",
+    pass: "PNSmQbwecKrbuFTCqXmYoaqicgEZpFeF",
     host: "mongodb://",
     cluster: "monorail.proxy.rlwy.net",
     dbName: "test"
@@ -23,14 +24,14 @@ constructor({user:u,port:p, pass: w, host: h,cluster:c, dbName: d}={
      }
      this.user = u
      this.port = p
-     this.setPass = w;
-     this.setHost = h;
-     this.setCluster = c;
-     this.setDbName = d;
+     this.setPass = w
+     this.setHost = h
+     this.setCluster = c
+     this.setDbName = d
      this.#open();
-     this.db= this.conexion.db(this.getDbName)
-     connect.instance=this;
-     return this;
+     this.db = this.conexion.db(this.getDbName)
+     connect.instance = this;
+     return this
      
      }
      set setPass(pass){
@@ -40,29 +41,33 @@ constructor({user:u,port:p, pass: w, host: h,cluster:c, dbName: d}={
          this.#host = host;
      }
      set setCluster(cluster){
-         this.#cluster=cluster;
+         this.#cluster = cluster;
      }
-     set detDbName(dbName){
+     set setDbName(dbName){
          this.#dbName= dbName;
      }
      get getPass(){
-         return this.#Pass;
+         return this.#pass
      }
      get getHost(){
-         return this.#Host;
+         return this.#host;
      }
      get getCluster(){
-         return this.#Cluster;
+         return this.#cluster;
      }
      get getDbName(){
-         return this.#DbName;
+         return this.#dbName;
      }
 
      async #open(){
-        this.conexion = new MongoClient((`${this.getHost}${this.user}:${this.getPass}@${this.getCluster}:${this.port}/`));
-        await this.conexion.connect();
+        this.conexion = new MongoClient(`${this.getHost}${this.user}:${this.getPass}@${this.getCluster}:${this.port}`)
+        this.conexion.connect();
 
      }
      async reconnect(){
         await this.#open();
      }
+     async close(){
+        await this.conexion.close();
+     }
+    }
