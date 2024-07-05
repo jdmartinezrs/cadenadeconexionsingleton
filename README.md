@@ -13,7 +13,7 @@ db.movies.find({"format.copies": {$gte: 200}, "format.name": "Bluray"}, {_id:0, 
 3. **Buscar películas donde el valor del formato "dvd" sea menor que 10:**
 
    ``` javascript
-   db.movies.find({"format.value":{$lt:10},"format.name":{$eq:"dvd"},{_id:0, "format.value":1,"format.name":1})
+   db.movies.find({"format.value":{$lt:10},"format.name":{$eq:"dvd"}},{projection:{_id:0,"format.value":1,"format.name":1}})
    ```
 
 4. **Buscar películas con un personaje apodado "Cobb":**
