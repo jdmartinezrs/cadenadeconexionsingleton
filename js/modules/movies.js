@@ -11,11 +11,19 @@ export class movies extends connect{
         return this;
     }
 
+    // async getAllAccionMovies(){
+    //     let res = await this.collection.find({genre:{$eq:"Accion"}},{projection:{_id:0,genre:1}}).toArray();
+    //     await this.conexion.close()
+    //     return res;
+    // }
+
     async getAllAccionMovies(){
-        let res = await this.collection.find({genre:{$eq:"Accion"}},{projection:{_id:0,genre:1}}).toArray();
+        let res = await this.collection.aggregate([{$match:{genre:"Accion"}},
+            {$project:{_id:0,genre:1}}]).toArray();
         await this.conexion.close()
         return res;
     }
+
 
     // async getAllBlurayMoviesWithMoreThan200(){
     //     let res = await this.collection.find({"format":{$elemMatch:{name:"Bluray"}}},{projection:{format:{$elemMatch:{name:"Bluray"}}}}).toArray();
@@ -23,40 +31,67 @@ export class movies extends connect{
     //     return res;
     // }
 
-    async getAllBlurayMoviesWithMoreThan200(){
-        let res = await this.collection.find({"format":{$elemMatch:{name:"Bluray"}}},{projection:{format:{$elemMatch:{name:"Bluray"}}}}).toArray();
+
+        async getAllBlurayMoviesWithMoreThan200(){
+        let res = await this.collection.aggregate([{$match:{"format.name":"Bluray","format.copies":{$gt: 200}}},
+            {$unwind:"$format"},
+            {$match:{"format.name":"Bluray"}},
+            {$project:{_id:0, name: 1,formatName: "$format.name",copies:"$format.copies"}}]).toArray();
         await this.conexion.close()
-        return res;
-    }
+         return res;
+     }
 
-
-    async getAllDvdFormatMoviesLessThan10(){
-        let res = await this.collection.find({"format.value":{$lt:10},"format.name":{$eq:"dvd"}},{projection:{_id:0,"format.value":1,"format.name":1}}).toArray();
-        await this.conexion.close()
-        return res;
-    }
-
-    // async getAllBlurayMoviesWithMoreThan200(){
-    //     let res = await this.collection.find({"format.copies": {$gte: 200}, "format.name": "Bluray"}, {_id:0, "format.copies": 1, "format.name": 1}).toArray();
+   // async getAllDvdFormatMoviesLessThan10(){
+    //     let res = await this.collection.find({"format.value":{$lt:10},"format.name":{$eq:"dvd"}},{projection:{_id:0,"format.value":1,"format.name":1}}).toArray();
     //     await this.conexion.close()
     //     return res;
+    // }
+     async getAllDvdFormatMoviesLessThan10(){
+        let res = await this.collection.aggregate([
+            {$match:{"format.name":"dvd", "format.value":{$lt: 10}}},
+            {$unwind: "$format"},
+            {$match:{"format.name":"dvd"}},{$project:{_id:0,name:1,formatName:"$format.name",formatValue:"$formatl.value"}}
+        ]).toArray();
+        await this.conexion.close()
+        return res;
+    }
 
+    // async getAllMoviesWereCharactherNickNameIsCobb(){
+    //     let res = await this.collection.find({"character.apodo":"Cobb"},{projection:{_id:0,"character.apodo":1}}).toArray();
+    //     await this.conexion.close()
+    //     return res;
+    // }
+
+    async getAllMoviesWereCharactherNickNameIsCobb(){
+        let res = await this.collection.aggregate([
+            {$match: {"character.apodo":"Cobb"}},
+            {$unwind: "$character"},
+            {$match:{"character.apodo":"Cobb"}},
+            {$project:{_id:0,NicknameCharacter:"$character.apodo"}}
+        ]).toArray();
+        await this.conexion.close()
+        return res;
+    }
+
+
+
+    //   async getAllMoviesWereActorIdsAre2And3(){
+    //     let res = await this.collection.find({"character.id_actor":{$in:[2,3]}},{projection:{_id:0,"character.id_actor":1,name:1}}).toArray();
+    //     await this.conexion.close()
+    //     return res;
     // }
 
 
-    async getAllMoviesWereCharactherNickNameIsCobb(){
-        let res = await this.collection.find({"character.apodo":"Cobb"},{projection:{_id:0,"character.apodo":1}}).toArray();
-        await this.conexion.close()
-        return res;
-    }
-
-
-    
     async getAllMoviesWereActorIdsAre2And3(){
-        let res = await this.collection.find({"character.id_actor":{$in:[2,3]}},{projection:{_id:0,"character.id_actor":1,name:1}}).toArray();
+        let res = await this.collection.aggregate([
+            {$match:{"character.id_actor":{$in:[2,3]}}},
+            {$unwind: "$character"},
+            {$match:{"character.id_actor": {$in:[2,3]}}},
+            {$project:{_id:0,characterName:"$character.name",actorsId:"$character.id_actor"}}]).toArray();
         await this.conexion.close()
         return res;
     }
+
 
     async getAllMoviesInBlurayFormat(){
         let res = await this.collection.find({"format.name":"Bluray"},{projection:{_id:0,"format.name":1,name:1}}).toArray();
